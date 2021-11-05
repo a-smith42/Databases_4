@@ -41,8 +41,5 @@ public class JDBCMainWindow extends JFrame implements ActionListener
 			if(e.getSource().equals(exitItem)){
 				this.dispose();
 			}
-		}
-		
-		
-		
+		}		
 	}
