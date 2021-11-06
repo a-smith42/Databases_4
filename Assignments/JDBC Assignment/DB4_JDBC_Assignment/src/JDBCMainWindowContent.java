@@ -74,7 +74,8 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 	private JButton ListAllArtists = new JButton("ListAllArtists");
 	private JButton ListAllAlbums = new JButton("ListAllAlbums");
 
-	public JDBCMainWindowContent(String aTitle) {
+	public JDBCMainWindowContent(String aTitle) 
+	{
 		// setting up the GUI
 		super(aTitle, false, false, false, false);
 		setEnabled(true);
@@ -186,23 +187,28 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 		TableModel.refreshFromDB(stmt);
 	}
 
-	public void initiate_db_conn() {
-		try {
+	public void initiate_db_conn() 
+	{
+		try
+		{
 			// Load the JConnector Driver
 			Class.forName("com.mysql.jdbc.Driver");
 			// Specify the DB Name
-			String url = "jdbc:mysql://localhost:3306/JDBC_Assignment";
+			String url = "jdbc:mysql://localhost:3306/JDBC_Assignment?serverTimezone=UTC";
 			// Connect to DB using DB URL, Username and password
-			con = DriverManager.getConnection(url, "root", "root");
+			con = DriverManager.getConnection(url, "root", "admin");
 			// Create a generic statement which is passed to the TestInternalFrame1
 			stmt = con.createStatement();
-		} catch (Exception e) {
+		} 
+		catch (Exception e) 
+		{
 			System.out.println("Error: Failed to connect to database\n" + e.getMessage());
 		}
 	}
 
 	// event handling
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) 
+	{
 		Object target = e.getSource();
 		if (target == clearButton) {
 			IDTF.setText("");
@@ -220,11 +226,12 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 			ValenceTF.setText("");
 			TempoTF.setText("");
 			MilsecDurationTF.setText("");
-
 		}
 
-		if (target == insertButton) {
-			try {
+		if (target == insertButton)
+		{
+			try 
+			{
 				String updateTemp = "INSERT INTO tracks VALUES(" + IDTF.getText() + ",'" + ArtistNameTF.getText()
 						+ "','" + TrackNameTF.getText() + "'," + AlbumNameTF.getText() + ",'" + MilsecPlayedTF.getText()
 						+ "','" + DanceabilityTF.getText() + "','" + EnergyTF.getText() + "'," + LoudnessTF.getText()
@@ -234,26 +241,39 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 
 				stmt.executeUpdate(updateTemp);
 
-			} catch (SQLException sqle) {
+			} 
+			catch (SQLException sqle)
+			{
 				System.err.println("Error with  insert:\n" + sqle.toString());
-			} finally {
+			} 
+			finally 
+			{
 				TableModel.refreshFromDB(stmt);
 			}
 		}
-		if (target == deleteButton) {
-
-			try {
+		
+		if (target == deleteButton) 
+		{
+			try 
+			{
 				String updateTemp = "DELETE FROM tracks WHERE id = " + IDTF.getText() + ";";
 				stmt.executeUpdate(updateTemp);
 
-			} catch (SQLException sqle) {
+			} 
+			catch (SQLException sqle)
+			{
 				System.err.println("Error with delete:\n" + sqle.toString());
-			} finally {
+			} 
+			finally 
+			{
 				TableModel.refreshFromDB(stmt);
 			}
 		}
-		if (target == updateButton) {
-			try {
+		
+		if (target == updateButton) 
+		{
+			try 
+			{
 				String updateTemp = "UPDATE tracks SET " + "artistName = '" + ArtistNameTF.getText()
 						+ "', trackName = '" + TrackNameTF.getText() + "', albumName = " + AlbumNameTF.getText()
 						+ ", milsecPlayed ='" + MilsecPlayedTF.getText() + "', danceability = '"
@@ -269,69 +289,84 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 				rs = stmt.executeQuery("SELECT * from tracks ");
 				rs.next();
 				rs.close();
-			} catch (SQLException sqle) {
+			} 
+			catch (SQLException sqle) 
+			{
 				System.err.println("Error with  update:\n" + sqle.toString());
-			} finally {
+			} 
+			finally 
+			{
 				TableModel.refreshFromDB(stmt);
 			}
 		}
 
 
-
-		if (target == this.ListAllArtists) {
+		if (target == this.ListAllArtists) 
+		{
 
 			cmd = "select distinct artistName from tracks;";
 
-			try {
+			try 
+			{
 				rs = stmt.executeQuery(cmd);
 				writeToFile(rs);
 				System.out.println(rs);
-			} catch (Exception e1) {
+			} 
+			catch (Exception e1) 
+			{
 				e1.printStackTrace();
 			}
-
 		}
 
-		if (target == this.NumTracks) {
+		if (target == this.NumTracks) 
+		{
 			String artistNameQ = this.NumTracksTF.getText();
 
 			cmd = "select artistName, count(*) " + "from tracks " + "where artistName = '" + artistNameQ + "';";
 
 			System.out.println(cmd);
-			try {
+			try 
+			{
 				rs = stmt.executeQuery(cmd);
 				writeToFile(rs);
 				System.out.println(rs.toString());
-			} catch (Exception e1) {
+			} 
+			catch (Exception e1) 
+			{
 				e1.printStackTrace();
 			}
-
 		}
-
 	}
-	///////////////////////////////////////////////////////////////////////////
 
-	private void writeToFile(ResultSet rs) {
-		try {
+	private void writeToFile(ResultSet rs) 
+	{
+		try 
+		{
 			System.out.println("In writeToFile");
 			FileWriter outputFile = new FileWriter("track_details.csv");
 			PrintWriter printWriter = new PrintWriter(outputFile);
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int numColumns = rsmd.getColumnCount();
 
-			for (int i = 0; i < numColumns; i++) {
+			for (int i = 0; i < numColumns; i++) 
+			{
 				printWriter.print(rsmd.getColumnLabel(i + 1) + ",");
 			}
 			printWriter.print("\n");
-			while (rs.next()) {
-				for (int i = 0; i < numColumns; i++) {
+			
+			while (rs.next()) 
+			{
+				for (int i = 0; i < numColumns; i++) 
+				{
 					printWriter.print(rs.getString(i + 1) + ",");
 				}
 				printWriter.print("\n");
 				printWriter.flush();
 			}
 			printWriter.close();
-		} catch (Exception e) {
+		} 
+		catch (Exception e) 
+		{
 			e.printStackTrace();
 		}
 	}

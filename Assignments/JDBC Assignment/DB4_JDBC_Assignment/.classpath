@@ -6,11 +6,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/a00267161/Documents/GitHub/Databases_4/Assignments/JDBC Assignment/Jar files for chart-20211104/iText-2.1.5.jar"/>
-	<classpathentry kind="lib" path="C:/Users/a00267161/Documents/GitHub/Databases_4/Assignments/JDBC Assignment/Jar files for chart-20211104/jcommon-1.0.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/a00267161/Documents/GitHub/Databases_4/Assignments/JDBC Assignment/Jar files for chart-20211104/jfreechart-1.0.14.jar"/>
-	<classpathentry kind="lib" path="C:/Users/a00267161/Documents/GitHub/Databases_4/Assignments/JDBC Assignment/Jar files for chart-20211104/jfreechart-1.0.14-demo.jar"/>
-	<classpathentry kind="lib" path="C:/Users/a00267161/Documents/GitHub/Databases_4/Assignments/JDBC Assignment/Jar files for chart-20211104/jfreechart-1.0.14-experimental.jar"/>
-	<classpathentry kind="lib" path="C:/Users/a00267161/Documents/GitHub/Databases_4/Assignments/JDBC Assignment/mysql-connector-java-8.0.20.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Alicia/Desktop/_Year 4/Databases_4/Assignments/JDBC Assignment/External JARs/iText-2.1.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Alicia/Desktop/_Year 4/Databases_4/Assignments/JDBC Assignment/External JARs/jcommon-1.0.17.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Alicia/Desktop/_Year 4/Databases_4/Assignments/JDBC Assignment/External JARs/jfreechart-1.0.14.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Alicia/Desktop/_Year 4/Databases_4/Assignments/JDBC Assignment/External JARs/jfreechart-1.0.14-demo.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Alicia/Desktop/_Year 4/Databases_4/Assignments/JDBC Assignment/External JARs/jfreechart-1.0.14-experimental.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Alicia/Desktop/_Year 4/Databases_4/Assignments/JDBC Assignment/External JARs/mysql-connector-java-8.0.20.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
