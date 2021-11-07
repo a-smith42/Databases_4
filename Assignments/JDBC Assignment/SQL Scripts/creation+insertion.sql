@@ -4,7 +4,7 @@ USE JDBC_Assignment;
 DROP TABLE IF EXISTS tracks;
 
 CREATE TABLE tracks (
-id int,
+id varchar(30),
 artistName varchar(255),
 trackName varchar(255),
 albumName varchar(255),
