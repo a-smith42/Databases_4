@@ -5,6 +5,10 @@ import java.io.PrintWriter;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.sql.*;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartFrame;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
 
 @SuppressWarnings("serial")
 public class JDBCMainWindowContent extends JInternalFrame implements ActionListener {
@@ -67,30 +71,37 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 	private JButton deleteButton = new JButton("Delete");
 	private JButton clearButton = new JButton("Clear");
 
-	private JButton NumTracks = new JButton("NumTracksPerArtist:");
+	private JButton chartButton = new JButton("Bop Chart");
+	
+	private JButton NumTracks = new JButton("Num Tracks Per Artist:");
 	private JTextField NumTracksTF = new JTextField(12);
-	private JButton avgTrackDuration = new JButton("avgTrackDuration");
-	private JTextField avgTrackDurationTF = new JTextField(12);
-	private JButton ListAllArtists = new JButton("ListAllArtists");
-	private JButton ListAllAlbums = new JButton("ListAllAlbums");
+	private JButton avgTrackDuration = new JButton("AVG Track Duration");
+	private JButton mostplayedButton = new JButton("Most Played Track");
+	private JButton artistsButton = new JButton("List All Artists");
+	private JButton albumsButton = new JButton("List All Albums");
 
 	public JDBCMainWindowContent(String aTitle) 
 	{
+		
 		// setting up the GUI
 		super(aTitle, false, false, false, false);
 		setEnabled(true);
 
+		Color c1 = new Color(203, 192, 209);
+		Color c2 = new Color(240, 192, 0);
+		Color c3 = new Color(157, 145, 163);
+		
 		initiate_db_conn();
 		// add the 'main' panel to the Internal Frame
 		content = getContentPane();
 		content.setLayout(null);
-		content.setBackground(Color.lightGray);
-		lineBorder = BorderFactory.createEtchedBorder(15, Color.red, Color.black);
+		content.setBackground(c1);
+		lineBorder = BorderFactory.createEtchedBorder(15, c2, Color.black);
 
 		// setup details panel and add the components to it
 		detailsPanel = new JPanel();
-		detailsPanel.setLayout(new GridLayout(11, 2));
-		detailsPanel.setBackground(Color.lightGray);
+		detailsPanel.setLayout(new GridLayout(15, 3));
+		detailsPanel.setBackground(c3);
 		detailsPanel.setBorder(BorderFactory.createTitledBorder(lineBorder, "CRUD Actions"));
 
 		detailsPanel.add(IDLabel);
@@ -127,16 +138,16 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 		// setup details panel and add the components to it
 		exportButtonPanel = new JPanel();
 		exportButtonPanel.setLayout(new GridLayout(3, 2));
-		exportButtonPanel.setBackground(Color.lightGray);
+		exportButtonPanel.setBackground(c3);
 		exportButtonPanel.setBorder(BorderFactory.createTitledBorder(lineBorder, "Export Data"));
 		exportButtonPanel.add(NumTracks);
 		exportButtonPanel.add(NumTracksTF);
 		exportButtonPanel.add(avgTrackDuration);
-		exportButtonPanel.add(avgTrackDurationTF);
-		exportButtonPanel.add(ListAllArtists);
-		exportButtonPanel.add(ListAllAlbums);
-		exportButtonPanel.setSize(500, 200);
-		exportButtonPanel.setLocation(3, 300);
+		exportButtonPanel.add(mostplayedButton);
+		exportButtonPanel.add(artistsButton);
+		exportButtonPanel.add(albumsButton);
+		exportButtonPanel.setSize(400, 200);
+		exportButtonPanel.setLocation(1150, 425);
 		content.add(exportButtonPanel);
 
 		insertButton.setSize(100, 30);
@@ -144,12 +155,14 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 		exportButton.setSize(100, 30);
 		deleteButton.setSize(100, 30);
 		clearButton.setSize(100, 30);
+		chartButton.setSize(100, 30);
 
-		insertButton.setLocation(370, 10);
-		updateButton.setLocation(370, 110);
-		exportButton.setLocation(370, 160);
-		deleteButton.setLocation(370, 60);
-		clearButton.setLocation(370, 210);
+		insertButton.setLocation(430, 40);
+		updateButton.setLocation(430, 117);
+		exportButton.setLocation(430, 195);
+		deleteButton.setLocation(430, 272);
+		clearButton.setLocation(430, 350);
+		chartButton.setLocation(430, 420);
 
 		insertButton.addActionListener(this);
 		updateButton.addActionListener(this);
@@ -157,8 +170,13 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 		deleteButton.addActionListener(this);
 		clearButton.addActionListener(this);
 
-		this.ListAllAlbums.addActionListener(this);
+		chartButton.addActionListener(this);
+
+		this.albumsButton.addActionListener(this);
 		this.NumTracks.addActionListener(this);
+		this.artistsButton.addActionListener(this);
+		this.avgTrackDuration.addActionListener(this);
+		this.mostplayedButton.addActionListener(this);
 
 		content.add(insertButton);
 		content.add(updateButton);
@@ -166,17 +184,19 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 		content.add(deleteButton);
 		content.add(clearButton);
 
+		content.add(chartButton);
+
 		TableofDBContents.setPreferredScrollableViewportSize(new Dimension(900, 300));
 
 		dbContentsPanel = new JScrollPane(TableofDBContents, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		dbContentsPanel.setBackground(Color.lightGray);
+		dbContentsPanel.setBackground(c3);
 		dbContentsPanel.setBorder(BorderFactory.createTitledBorder(lineBorder, "Database Content"));
 
-		detailsPanel.setSize(360, 300);
-		detailsPanel.setLocation(3, 0);
-		dbContentsPanel.setSize(700, 300);
-		dbContentsPanel.setLocation(477, 0);
+		detailsPanel.setSize(400, 400);
+		detailsPanel.setLocation(10, 10);
+		dbContentsPanel.setSize(1000, 400);
+		dbContentsPanel.setLocation(550, 10);
 
 		content.add(detailsPanel);
 		content.add(dbContentsPanel);
@@ -206,11 +226,46 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 		}
 	}
 
+	//******PIE CHART*******
+	public  void pieGraph(ResultSet rs, String title) 
+	{
+		try 
+		{
+			DefaultPieDataset dataset = new DefaultPieDataset();
+
+			while (rs.next())
+			{
+				String category = rs.getString(1);
+				String value = rs.getString(2);
+				dataset.setValue(category+ " "+value, new Double(value));
+			}
+			JFreeChart chart = ChartFactory.createPieChart(
+					title,  
+					dataset,             
+					false,              
+					true,
+					true
+			);
+
+			ChartFrame frame = new ChartFrame(title, chart);
+			chart.setBackgroundPaint(Color.WHITE);
+			frame.pack();
+			frame.setSize(1000, 750);
+			frame.setVisible(true);
+		} 
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	// event handling
 	public void actionPerformed(ActionEvent e) 
 	{
 		Object target = e.getSource();
-		if (target == clearButton) {
+		//*********CLEAR*********
+		if (target == clearButton) 
+		{
 			IDTF.setText("");
 			ArtistNameTF.setText("");
 			TrackNameTF.setText("");
@@ -228,6 +283,7 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 			MilsecDurationTF.setText("");
 		}
 
+		//*********INSERT**********
 		if (target == insertButton)
 		{
 			try 
@@ -252,6 +308,7 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 			}
 		}
 		
+		//**********DELETE**********
 		if (target == deleteButton) 
 		{
 			try 
@@ -270,6 +327,7 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 			}
 		}
 		
+		//***********UPDATE**********
 		if (target == updateButton) 
 		{
 			try 
@@ -299,18 +357,53 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 				TableModel.refreshFromDB(stmt);
 			}
 		}
+		
+		if (target.equals(exportButton))
+		{  		
+			//set cmd to write out all the table data to the csv
+			cmd = "select * from tracks;";
+			
+			try 
+			{
+				rs= stmt.executeQuery(cmd); 
+				writeToFile(rs);
+			} 
+			catch (Exception e1) 
+			{
+				e1.printStackTrace();
+			}
+		}
+		
+		if (target.equals(chartButton))
+		{  		
+				cmd = "select trackName, round(energy+danceability+loudness+tempo+valence-acousticness-speechiness-instrumentalness+liveness) as \"Bopiness\" from tracks order by Bopiness asc;";
+				try 
+				{
+					rs= stmt.executeQuery(cmd);
+				}
+				catch (SQLException e1) 
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} 
+				pieGraph(rs, "\"How much of a bop is it?\" Statistics");				
+		}
+			
 
 
-		if (target == this.ListAllArtists) 
+		//******LIST ALL ARTISTS********
+		if (target == this.artistsButton) 
 		{
+			System.out.println("artists pressed");
 
-			cmd = "select distinct artistName from tracks;";
+			cmd = "select distinct artistName from tracks order by artistName asc;";
 
+			System.out.println(cmd);
 			try 
 			{
 				rs = stmt.executeQuery(cmd);
 				writeToFile(rs);
-				System.out.println(rs);
+				System.out.println(rs.toString());
 			} 
 			catch (Exception e1) 
 			{
@@ -318,12 +411,74 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 			}
 		}
 
+		//******LIST ALL ALBUMS********
+		if (target == this.albumsButton) 
+		{
+			System.out.println("albums pressed");
+
+			cmd = "select distinct albumName from tracks order by albumName asc;";
+
+			System.out.println(cmd);
+			try 
+			{
+				rs = stmt.executeQuery(cmd);
+				writeToFile(rs);
+				System.out.println(rs.toString());
+			} 
+			catch (Exception e1) 
+			{
+				e1.printStackTrace();
+			}
+		}
+		
+		//******LIST NUM TRACKS PER CHOSEN ARTIST********
 		if (target == this.NumTracks) 
 		{
+			System.out.println("num tracks pressed");
 			String artistNameQ = this.NumTracksTF.getText();
 
 			cmd = "select artistName, count(*) " + "from tracks " + "where artistName = '" + artistNameQ + "';";
 
+			System.out.println(cmd);
+			try 
+			{
+				rs = stmt.executeQuery(cmd);
+				writeToFile(rs);
+				System.out.println(rs.toString());
+			} 
+			catch (Exception e1) 
+			{
+				e1.printStackTrace();
+			}
+		}
+		
+		//******AVG TRACK DURATION********
+		if (target == this.avgTrackDuration) 
+		{
+			System.out.println("track duration pressed");
+
+			cmd = "SELECT AVG(milsecduration) as AverageTrackDuration FROM tracks;";
+
+			System.out.println(cmd);
+			try 
+			{
+				rs = stmt.executeQuery(cmd);
+				writeToFile(rs);
+				System.out.println(rs.toString());
+			} 
+			catch (Exception e1) 
+			{
+				e1.printStackTrace();
+			}
+		}
+		
+		//******MOST PLAYED TRACK********
+		if (target == this.mostplayedButton) 
+		{
+			System.out.println("most played pressed");
+			
+			cmd = "SELECT trackname, artistname, max(milsecplayed) from tracks;";
+			
 			System.out.println(cmd);
 			try 
 			{
