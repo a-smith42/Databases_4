@@ -57,4 +57,55 @@ INSERT INTO `tracks` (`id`, `artistName`, `trackName`, `albumName`, `milsecPlaye
  0,0.277,0.587,141.991,'234526'),(20,'Amber Run','I Found','5AM (Expanded Edition)',
  '273000',0.567,0.303,-12.481,0.0351,0.862,0.00563,0.104,0.252,124.949,'273000');
 
+#Stored function
+DROP FUNCTION IF EXISTS get_avg_listening_time;
+DELIMITER //
+CREATE FUNCTION get_avg_listening_time
+(
+	artist_param VARCHAR(100)
+)
+RETURNS DECIMAL(9,2)
+DETERMINISTIC
+BEGIN
+	DECLARE avg_time DECIMAL(9,2); 
+		SELECT avg(milsecPlayed)
+		INTO avg_time
+		FROM tracks
+		WHERE artistName = artist_param;
+	RETURN avg_time;
+END//
+delimiter ;
+
+#Stored function
+DROP FUNCTION IF EXISTS capitalise;
+DELIMITER //
+CREATE FUNCTION capitalise
+(
+	input varchar(100)
+)
+RETURNS varchar(100)
+DETERMINISTIC
+BEGIN
+DECLARE firstLetterOfInput VARCHAR(1);
+DECLARE restOfInput VARCHAR(100);
+SET firstLetterOfInput = SUBSTRING(input, 1, 1);
+SET restOfInput = SUBSTRING(input, 2);
+RETURN CONCAT(UPPER(firstLetterOfInput), restOfInput);
+END//
+delimiter ;
+
+
+DROP TRIGGER IF EXISTS capitalise_fields;
+DELIMITER //
+CREATE TRIGGER capitalise_fields
+	BEFORE UPDATE ON tracks
+    FOR EACH ROW
+BEGIN
+	SET NEW.artistName = capitalise(NEW.artistName);
+	SET NEW.trackName = capitalise(NEW.trackName);
+	SET NEW.albumName = capitalise(NEW.albumName);
+
+END//
+delimiter ;
+
 select * from tracks;

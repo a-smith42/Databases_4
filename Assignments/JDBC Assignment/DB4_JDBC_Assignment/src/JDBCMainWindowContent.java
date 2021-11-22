@@ -216,7 +216,8 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 			// Specify the DB Name
 			String url = "jdbc:mysql://localhost:3306/JDBC_Assignment?serverTimezone=UTC";
 			// Connect to DB using DB URL, Username and password
-			con = DriverManager.getConnection(url, "root", "admin");
+			/*Home*/ //con = DriverManager.getConnection(url, "root", "admin");
+			/*College*/con = DriverManager.getConnection(url, "root", "root");
 			// Create a generic statement which is passed to the TestInternalFrame1
 			stmt = con.createStatement();
 		} 
