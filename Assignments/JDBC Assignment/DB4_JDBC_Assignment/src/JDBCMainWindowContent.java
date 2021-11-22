@@ -296,6 +296,7 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 						+ InstrumentalnessTF.getText() + "," + LivenessTF.getText() + "," + ValenceTF.getText() + ","
 						+ TempoTF.getText() + "," + MilsecDurationTF.getText() + ");";
 
+				System.out.println(updateTemp);
 				stmt.executeUpdate(updateTemp);
 
 			} 
