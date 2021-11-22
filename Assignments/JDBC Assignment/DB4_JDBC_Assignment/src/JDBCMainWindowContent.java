@@ -376,7 +376,7 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 		
 		if (target.equals(chartButton))
 		{  		
-				cmd = "select trackName, round(energy+danceability+loudness+tempo+valence-acousticness-speechiness-instrumentalness+liveness) as \"Bopiness\" from tracks order by Bopiness asc;";
+				cmd = "select concat(trackName, \" by \",  artistName, \":\"), round(energy+danceability+loudness+tempo+valence-acousticness-speechiness-instrumentalness+liveness) as \"Bopiness\" from tracks order by Bopiness asc;";
 				try 
 				{
 					rs= stmt.executeQuery(cmd);
